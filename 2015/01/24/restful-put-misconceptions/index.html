@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="Phaninder,hello@phaninder.com"><title>RESTful - put misconceptions · Phani</title><meta name="description" content="It is quite easy to confuse in choosing between PUT and POST, when designing RESTful api.
+
+By the end of reading this post you would be able to make a"><meta name="keywords" content="Scaling Infrastructure, Docker, NodeJs, Postgres, ReactJs, Phonegap, Web application security, es7"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="/css/ds-embed.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">Phani</a></h3><div class="description"><p>My findings and ramblings</p></div></div></div><ul class="social-links"><li><a href="https://twitter.com/PhaniPasupula" target="_blank"><i class="fa fa-twitter"></i></a></li><li><a href="https://uk.linkedin.com/in/phaninder-pasupula-aab4a02b" target="_blank"><i class="fa fa-linkedin"></i></a></li></ul><div class="footer"><div class="by_farbox"><a href="" target="_blank">Copyright 2014-2017</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">Home</a></li><li><a href="/about">About</a></li><li><a href="/archives">Archive</a></li><li><a href="/links">Links</a></li></div><div class="information"><div class="back_btn"><li><a onclick="window.history.go(-1)" class="fa fa-chevron-left"> </a></li></div><div class="avatar"><img src="https://secure.gravatar.com/avatar/da8ad3d7a783fda9082894427e6be2a9?s=180&amp;r=G&amp;d="></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>RESTful - put misconceptions</a></h3></div><div class="post-content"><p>It is quite easy to confuse in choosing between PUT and POST, when designing RESTful api.</p>
+<blockquote>
+<p>By the end of reading this post you would be able to make a justifying answer for the following questions</p>
+</blockquote>
+<ol>
+<li>With this request I’m creating a resource object in the back-end, so should I use POST?</li>
+<li>I’ve the identifier but I end up creating a resource object in the back-end with the first request. can I use PUT?</li>
+<li>I don’t have resource identifier in the URL, does this mean I use POST?</li>
+</ol>
+<p><strong>Some facts:</strong></p>
+<ul>
+<li>POST and PUT aren’t the HTTP equivalent of the CRUD’s create and update</li>
+<li>Both PUT and POST can be used for creating. * Implementation is left to user.</li>
+<li>Well defined RESTful api will make your client lives easier. Little effort to understand these would make a good difference.</li>
+</ul>
+<p><strong>Answer the following questions</strong><br>Q1. Do you name your actual resource location? or the identifier?<br>Q2. Are your requests will result in the same state on the server no matter how many times that same request is executed? idempotent?</p>
+<blockquote>
+<p>If Q1 is yes i.e. if you name them use PUT.<br>If Q2 is yes i.e. idempotent then use PUT.</p>
+</blockquote>
+<p><strong>Below table summarizes recommended return values:</strong></p>
+<table>
+<thead>
+<tr>
+<th>HTTP Verb</th>
+<th>/articles</th>
+<th>/articles/453</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PUT</td>
+<td>404 (Not Found)</td>
+<td>200 (OK) or 204 (No Content). 404 (Not Found)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>201 (Created)</td>
+<td>404 (Not Found)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>To summarize:</strong></p>
+<ul>
+<li>PUT is idempotent, it is a nice property, if possible I would PUT when possible.</li>
+<li>PUT without resource identifier may give an impression of update/replace every resource in the entire collection. Unless you wan to apply that update on entire collection.</li>
+</ul>
+<p><strong>Consider a following scenario :</strong></p>
+<p>Request: PUT /articles Form args: article_id = 10 data = “abcd”</p>
+<p><strong>Is it correct to use PUT here?</strong></p>
+<p>In my opinion, <em>yes</em>, because I have the resource identifier i.e. article_id. And <code>GET /articles/10</code> will return article.</p>
+<p><strong>What if I end up creating an article (resource object) with my first request. Is it still correct to use PUT here?</strong></p>
+<p>I prefer <em>PUT</em> here as well because I have the identifier and PUT makes it <em>idempotent</em>. So it does more good.</p>
+<blockquote>
+<p>One drawback is you don’t get the 201 response for your first request, just 200 every time(if success) Please note that the decision is yours. These are just ideas taken from some common practices and experience. This article is still under review.</p>
+</blockquote>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2015-01-24</span><i class="fa fa-tag"></i></div></div></div></div><div class="share"><div class="evernote"> <a href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank" class="fa fa-bookmark"></a></div><div class="weibo"> <a href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));" class="fa fa-weibo"></a></div><div class="twitter"> <a href="http://twitter.com/home?status=,http://phaninder.com/2015/01/24/restful-put-misconceptions/,Phani,RESTful - put misconceptions,;" class="fa fa-twitter"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a role="navigation" href="/2015/01/24/put-and-delete-can-they-be-used-as-html-form-methods/" title="PUT and DELETE: can they be used as HTML form methods ?" class="btn">prev_post</a></li><li class="next pagbuttons"><a role="navigation" href="/2014/03/12/gotchas-connect-mongo-session-store/" title="Gotchas, Connect-mongo session store" class="btn">next_post</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
